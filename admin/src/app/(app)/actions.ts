@@ -43,7 +43,7 @@ async function afterCatalogChange() {
 export async function setOrderStatus(formData: FormData) {
   await requireAdmin();
   const id = text(formData, "id");
-  const status = text(formData, "status");
+  const status = text(formData, "status", 16);
   if (!isUuid(id) || !["pending", "paid", "cancelled"].includes(status)) return;
   await sql`update orders set status = ${status}, updated_at = now() where id = ${id}`;
   revalidatePath("/", "layout");
@@ -67,7 +67,7 @@ export async function saveProduct(_prev: FormState, formData: FormData): Promise
 
   if (!name) return { error: "Give the product a name." };
   if (!isUuid(categoryId)) return { error: "Choose a category." };
-  if (!Number.isFinite(price) || price < 0) return { error: "Enter a valid price in Naira." };
+  if (!Number.isFinite(price) || price < 0 || price > 1_000_000_000) return { error: "Enter a valid price in Naira." };
 
   let imageUrl: string | null = null;
   const file = imageFile(formData);
