@@ -1,5 +1,6 @@
 "use server";
 
+import { HONEYPOT_FIELD } from "@/components/honeypot";
 import { auth, isAllowedEmail } from "@/lib/auth/server";
 import { allowAttempt, requestIp } from "@/lib/security";
 import { redirect } from "next/navigation";
@@ -8,9 +9,11 @@ type State = { error: string } | null;
 
 const TOO_MANY = "Too many attempts. Please wait 15 minutes and try again.";
 
-/** Hidden "company" field: people never see it, form-filling bots do. */
+/** Hidden honeypot field: people never see it, form-filling bots do. */
 function isBot(formData: FormData) {
-  return String(formData.get("company") ?? "") !== "";
+  const tripped = String(formData.get(HONEYPOT_FIELD) ?? "") !== "";
+  if (tripped) console.warn("Admin form rejected: honeypot field was filled");
+  return tripped;
 }
 
 export async function signIn(_prev: State, formData: FormData): Promise<State> {
