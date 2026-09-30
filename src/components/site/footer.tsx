@@ -1,5 +1,5 @@
 import { TikTokIcon } from "@/components/icons";
-import { categories } from "@/lib/products";
+import { getCatalog } from "@/lib/catalog";
 import { site } from "@/lib/site";
 import { whatsappLink } from "@/lib/whatsapp";
 import Link from "next/link";
@@ -8,7 +8,8 @@ import { Logo } from "./header";
 
 const link = "text-[15px] text-white/65 transition-colors hover:text-white";
 
-export function Footer() {
+export async function Footer() {
+  const { categories } = await getCatalog();
   return (
     <footer className="relative overflow-hidden bg-night text-white">
       <div className="pointer-events-none absolute -top-40 left-1/3 size-[480px] rounded-full bg-navy/40 blur-[120px]" />
