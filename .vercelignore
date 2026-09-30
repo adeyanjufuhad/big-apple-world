@@ -1,0 +1,7 @@
+# Never upload local secrets or the separate admin app with the storefront.
+.env*
+!.env.example
+admin
+.claude
+.next
+node_modules
