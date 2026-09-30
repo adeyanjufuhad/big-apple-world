@@ -1,5 +1,6 @@
 "use client";
 
+import { PasswordInput } from "@/components/password-input";
 import { useActionState } from "react";
 import { createOwner } from "../actions";
 
@@ -17,12 +18,12 @@ export function SetupForm() {
       </label>
       <label className="block">
         <span className="mb-1.5 block text-sm font-medium">Password</span>
-        <input name="password" type="password" autoComplete="new-password" minLength={8} required className="field" />
+        <PasswordInput name="password" autoComplete="new-password" minLength={8} required />
         <span className="mt-1 block text-xs text-muted">At least 8 characters.</span>
       </label>
       <label className="block">
         <span className="mb-1.5 block text-sm font-medium">Confirm password</span>
-        <input name="confirm" type="password" autoComplete="new-password" minLength={8} required className="field" />
+        <PasswordInput name="confirm" autoComplete="new-password" minLength={8} required />
       </label>
       {state?.error && <p className="text-sm text-apple">{state.error}</p>}
       <button
