@@ -1,5 +1,6 @@
 "use client";
 
+import { Honeypot } from "@/components/honeypot";
 import { PasswordInput } from "@/components/password-input";
 import { useActionState } from "react";
 import { signIn } from "../actions";
@@ -7,7 +8,8 @@ import { signIn } from "../actions";
 export function LoginForm() {
   const [state, action, pending] = useActionState(signIn, null);
   return (
-    <form action={action} className="space-y-4">
+    <form action={action} className="relative space-y-4">
+      <Honeypot />
       <label className="block">
         <span className="mb-1.5 block text-sm font-medium">Email</span>
         <input name="email" type="email" autoComplete="email" required className="field" />

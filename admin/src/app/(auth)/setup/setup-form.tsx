@@ -1,5 +1,6 @@
 "use client";
 
+import { Honeypot } from "@/components/honeypot";
 import { PasswordInput } from "@/components/password-input";
 import { useActionState } from "react";
 import { createOwner } from "../actions";
@@ -7,7 +8,8 @@ import { createOwner } from "../actions";
 export function SetupForm() {
   const [state, action, pending] = useActionState(createOwner, null);
   return (
-    <form action={action} className="space-y-4">
+    <form action={action} className="relative space-y-4">
+      <Honeypot />
       <label className="block">
         <span className="mb-1.5 block text-sm font-medium">Your name</span>
         <input name="name" autoComplete="name" required className="field" />
@@ -18,12 +20,12 @@ export function SetupForm() {
       </label>
       <label className="block">
         <span className="mb-1.5 block text-sm font-medium">Password</span>
-        <PasswordInput name="password" autoComplete="new-password" minLength={8} required />
-        <span className="mt-1 block text-xs text-muted">At least 8 characters.</span>
+        <PasswordInput name="password" autoComplete="new-password" minLength={10} required />
+        <span className="mt-1 block text-xs text-muted">At least 10 characters.</span>
       </label>
       <label className="block">
         <span className="mb-1.5 block text-sm font-medium">Confirm password</span>
-        <PasswordInput name="confirm" autoComplete="new-password" minLength={8} required />
+        <PasswordInput name="confirm" autoComplete="new-password" minLength={10} required />
       </label>
       {state?.error && <p className="text-sm text-apple">{state.error}</p>}
       <button
