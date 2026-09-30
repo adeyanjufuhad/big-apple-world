@@ -3,7 +3,7 @@
 import { InfiniteSlider } from "@/components/ui/infinite-slider";
 import { ProgressiveBlur } from "@/components/ui/progressive-blur";
 import { brands } from "@/lib/brands";
-import { categories } from "@/lib/products";
+import type { Category } from "@/lib/products";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 
@@ -15,7 +15,7 @@ function Separator() {
   );
 }
 
-function WordRow({ outline, reverse }: { outline?: boolean; reverse?: boolean }) {
+function WordRow({ categories, outline, reverse }: { categories: Category[]; outline?: boolean; reverse?: boolean }) {
   return (
     <InfiniteSlider gap={40} speed={55} reverse={reverse}>
       {categories.map((c) => (
@@ -37,7 +37,7 @@ function WordRow({ outline, reverse }: { outline?: boolean; reverse?: boolean })
 
 // Logo-cloud pattern from 21st.dev (InfiniteSlider + ProgressiveBlur) on a brand-navy band,
 // followed by two giant counter-scrolling category rows.
-export function BrandMarquee() {
+export function BrandMarquee({ categories }: { categories: Category[] }) {
   return (
     <section aria-labelledby="brands-heading" className="relative isolate overflow-hidden bg-navy py-16 text-white lg:py-24">
       <div className="grain pointer-events-none absolute inset-0 -z-10 opacity-[0.12] mix-blend-soft-light" />
@@ -71,8 +71,8 @@ export function BrandMarquee() {
       </div>
 
       <div className="mt-14 -rotate-2 space-y-3 lg:mt-20">
-        <WordRow />
-        <WordRow outline reverse />
+        <WordRow categories={categories} />
+        <WordRow categories={categories} outline reverse />
       </div>
     </section>
   );

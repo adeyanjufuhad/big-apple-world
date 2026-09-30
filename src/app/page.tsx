@@ -8,52 +8,75 @@ import { TrustStrip } from "@/components/home/trust-strip";
 import { Visit } from "@/components/home/visit";
 import { WhyChooseUs } from "@/components/home/why-choose-us";
 import { RailSection } from "@/components/shop/product-rail";
-import { newArrivals } from "@/lib/products";
+import { getCatalog } from "@/lib/catalog";
 
-export default function Home() {
+// Products whose photos have clean white backgrounds show best in the hero arch.
+const HERO_PICKS = ["ntfs-facial-steamer", "electric-nail-drill-kit", "extra-virgin-argan-oil", "professional-wax-warmer"];
+
+export default async function Home() {
+  const { categories, products } = await getCatalog();
+  const inStock = products.filter((p) => p.inStock);
+  const bestSellers = products.filter((p) => p.bestSeller);
+  const newArrivals = products.filter((p) => p.newArrival);
+
+  const picks = HERO_PICKS.map((slug) => products.find((p) => p.slug === slug)).filter((p) => p !== undefined);
+  const heroSlides = [...picks, ...bestSellers.filter((p) => !picks.includes(p))].slice(0, 4);
+
   return (
     <>
-      <Hero />
+      <Hero slides={heroSlides} />
       <TrustStrip />
 
       <Section id="categories" eyebrow="Browse the store" title="Shop by category" link={{ href: "/shop", label: "Shop all" }}>
-        <CategoryBento />
+        <CategoryBento categories={categories} products={products} />
       </Section>
 
-      <Section
-        id="in-stock"
-        align="center"
-        className="pt-0 lg:pt-0"
-        eyebrow={
-          <span className="inline-flex items-center gap-2">
-            <span className="relative flex size-2">
-              <span className="absolute inline-flex size-full animate-ping rounded-full bg-emerald-500 opacity-60" />
-              <span className="relative inline-flex size-2 rounded-full bg-emerald-500" />
+      {inStock.length > 0 && (
+        <Section
+          id="in-stock"
+          align="center"
+          className="pt-0 lg:pt-0"
+          eyebrow={
+            <span className="inline-flex items-center gap-2">
+              <span className="relative flex size-2">
+                <span className="absolute inline-flex size-full animate-ping rounded-full bg-emerald-500 opacity-60" />
+                <span className="relative inline-flex size-2 rounded-full bg-emerald-500" />
+              </span>
+              Available today
             </span>
-            Available today
-          </span>
-        }
-        title="In stock now"
-        link={{ href: "/shop?stock=1", label: "View all in stock" }}
-      >
-        <InStockShowcase />
-      </Section>
+          }
+          title="In stock now"
+          link={{ href: "/shop?stock=1", label: "View all in stock" }}
+        >
+          <InStockShowcase categories={categories} products={inStock} />
+        </Section>
+      )}
 
-      <Section id="best-sellers" eyebrow="Customer favourites" title="Best sellers" link={{ href: "/shop?sort=best", label: "View all" }} className="pt-0 lg:pt-0">
-        <BestSellers />
-      </Section>
+      {bestSellers.length > 0 && (
+        <Section
+          id="best-sellers"
+          eyebrow="Customer favourites"
+          title="Best sellers"
+          link={{ href: "/shop?sort=best", label: "View all" }}
+          className="pt-0 lg:pt-0"
+        >
+          <BestSellers products={bestSellers} />
+        </Section>
+      )}
 
-      <BrandMarquee />
+      <BrandMarquee categories={categories} />
 
-      <RailSection
-        id="new-arrivals"
-        eyebrow="Just landed"
-        title="New arrivals"
-        link={{ href: "/shop?sort=new", label: "View all" }}
-        products={newArrivals}
-      />
+      {newArrivals.length > 0 && (
+        <RailSection
+          id="new-arrivals"
+          eyebrow="Just landed"
+          title="New arrivals"
+          link={{ href: "/shop?sort=new", label: "View all" }}
+          products={newArrivals}
+        />
+      )}
 
-      <WhyChooseUs />
+      <WhyChooseUs floating={products.find((p) => p.slug === "ntfs-facial-steamer") ?? bestSellers[0]} />
 
       <Visit />
     </>

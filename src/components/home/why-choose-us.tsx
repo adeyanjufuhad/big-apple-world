@@ -1,7 +1,7 @@
 "use client";
 
 import { buttonClass } from "@/components/ui/button";
-import { getProduct } from "@/lib/products";
+import type { Product } from "@/lib/products";
 import { formatPrice } from "@/lib/utils";
 import { ArrowRight, BadgePercent, Factory, MessageCircle } from "lucide-react";
 import { motion } from "motion/react";
@@ -27,9 +27,7 @@ const reasons = [
   },
 ];
 
-const floating = getProduct("ntfs-facial-steamer")!;
-
-export function WhyChooseUs() {
+export function WhyChooseUs({ floating }: { floating?: Product }) {
   return (
     <section id="why-us" className="mx-auto max-w-7xl scroll-mt-28 px-4 pb-16 sm:px-6 lg:px-8 lg:pb-24">
       <motion.div
@@ -93,6 +91,7 @@ export function WhyChooseUs() {
           </motion.li>
         </ul>
 
+        {floating && (
         <Link
           href={`/product/${floating.slug}`}
           className="group relative flex min-h-[360px] flex-col items-center justify-center rounded-[1.5rem] bg-white p-6 ring-1 ring-line"
@@ -124,6 +123,7 @@ export function WhyChooseUs() {
             </span>
           </span>
         </Link>
+        )}
       </div>
     </section>
   );

@@ -1,17 +1,16 @@
 "use client";
 
 import { ProductCard } from "@/components/shop/product-card";
-import { categories, inStock } from "@/lib/products";
+import type { Category, Product } from "@/lib/products";
 import { cn } from "@/lib/utils";
 import { AnimatePresence, motion } from "motion/react";
 import { useState } from "react";
 
-const tabs = [
-  { slug: "all", name: "All products" },
-  ...categories.filter((c) => inStock.some((p) => p.category === c.slug)),
-];
-
-export function InStockShowcase() {
+export function InStockShowcase({ categories, products: inStock }: { categories: Category[]; products: Product[] }) {
+  const tabs = [
+    { slug: "all", name: "All products" },
+    ...categories.filter((c) => inStock.some((p) => p.category === c.slug)),
+  ];
   const [active, setActive] = useState("all");
   const items = (active === "all" ? inStock : inStock.filter((p) => p.category === active)).slice(0, 8);
 

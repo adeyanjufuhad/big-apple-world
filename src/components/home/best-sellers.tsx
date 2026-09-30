@@ -1,14 +1,15 @@
 import { AddToCartButton } from "@/components/cart/add-to-cart";
 import { ProductCard } from "@/components/shop/product-card";
-import { bestSellers, getCategory } from "@/lib/products";
+import type { Product } from "@/lib/products";
 import { formatPrice } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
 
 const LEAD = "professional-hair-styling-kit";
 
-export function BestSellers() {
+export function BestSellers({ products: bestSellers }: { products: Product[] }) {
   const lead = bestSellers.find((p) => p.slug === LEAD) ?? bestSellers[0];
+  if (!lead) return null;
   const rest = bestSellers.filter((p) => p !== lead).slice(0, 4);
 
   return (
@@ -33,7 +34,7 @@ export function BestSellers() {
         </Link>
         <div className="relative flex flex-col gap-5 p-7 pt-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <p className="text-sm text-white/60">{getCategory(lead.category)?.name}</p>
+            <p className="text-sm text-white/60">{lead.categoryName}</p>
             <h3 className="mt-1 text-2xl font-medium tracking-tight sm:text-3xl">
               <Link href={`/product/${lead.slug}`} className="hover:underline">
                 {lead.name}

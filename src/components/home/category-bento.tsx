@@ -1,34 +1,42 @@
-import { categories, products, type CategorySlug } from "@/lib/products";
+import type { Category, Product } from "@/lib/products";
 import { cn } from "@/lib/utils";
 import { ArrowUpRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
-// Bento order and sizing. The first tile is the tall feature card.
-const layout: { slug: CategorySlug; className: string; imageClass: string }[] = [
-  {
-    slug: "beauty-spa",
-    className: "sm:col-span-2 lg:col-span-5 lg:row-span-2 min-h-[380px] lg:min-h-[560px]",
-    imageClass: "right-0 bottom-0 h-[62%] w-[70%]",
-  },
-  { slug: "nails", className: "lg:col-span-7 min-h-[260px]", imageClass: "right-2 bottom-0 h-full w-[48%]" },
-  { slug: "pedicure-manicure", className: "lg:col-span-7 min-h-[260px]", imageClass: "right-2 bottom-0 h-full w-[48%]" },
-  { slug: "salon-equipment", className: "lg:col-span-4 min-h-[260px]", imageClass: "right-0 bottom-0 h-[80%] w-[55%]" },
-  { slug: "hair-care", className: "lg:col-span-4 min-h-[260px]", imageClass: "right-0 bottom-0 h-[80%] w-[55%]" },
-  { slug: "wellness", className: "sm:col-span-2 lg:col-span-4 min-h-[260px]", imageClass: "right-0 bottom-0 h-[80%] w-[55%]" },
-];
+// Tile sizing by position: a tall feature card, two wide cards, then rows of three.
+// Works for any number of categories the owner adds in the admin.
+function tile(i: number, total: number) {
+  if (i === 0)
+    return {
+      className: "sm:col-span-2 lg:col-span-5 lg:row-span-2 min-h-[380px] lg:min-h-[560px]",
+      imageClass: "right-0 bottom-0 h-[62%] w-[70%]",
+      feature: true,
+    };
+  if (i <= 2)
+    return {
+      className: "lg:col-span-7 min-h-[260px]",
+      imageClass: "right-2 bottom-0 h-full w-[48%]",
+      feature: false,
+    };
+  const lastOdd = i === total - 1 && (total - 3) % 2 === 1;
+  return {
+    className: cn("lg:col-span-4 min-h-[260px]", lastOdd && "sm:col-span-2"),
+    imageClass: "right-0 bottom-0 h-[80%] w-[55%]",
+    feature: false,
+  };
+}
 
-export function CategoryBento() {
+export function CategoryBento({ categories, products }: { categories: Category[]; products: Product[] }) {
   return (
     <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-12 lg:gap-5">
-      {layout.map(({ slug, className, imageClass }, i) => {
-        const category = categories.find((c) => c.slug === slug)!;
-        const items = products.filter((p) => p.category === slug);
-        const feature = i === 0;
+      {categories.map((category, i) => {
+        const items = products.filter((p) => p.category === category.slug);
+        const { className, imageClass, feature } = tile(i, categories.length);
         return (
-          <li key={slug} className={className}>
+          <li key={category.slug} className={className}>
             <Link
-              href={`/shop?category=${slug}`}
+              href={`/shop?category=${category.slug}`}
               className="group relative flex h-full flex-col overflow-hidden rounded-[1.75rem] bg-sand p-6 transition-colors hover:bg-[#efece7] sm:p-7"
             >
               <span className="w-fit rounded-full bg-white px-3 py-1 text-xs">

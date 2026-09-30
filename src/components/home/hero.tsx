@@ -3,7 +3,7 @@
 import { useCart } from "@/components/cart/cart-provider";
 import { WhatsAppIcon } from "@/components/icons";
 import { buttonClass } from "@/components/ui/button";
-import { getCategory, getProduct, type Product } from "@/lib/products";
+import type { Product } from "@/lib/products";
 import { site } from "@/lib/site";
 import { formatPrice } from "@/lib/utils";
 import { whatsappLink } from "@/lib/whatsapp";
@@ -14,14 +14,6 @@ import Link from "next/link";
 import { useEffect, useId, useState } from "react";
 
 const SLIDE_MS = 5000;
-const slides = [
-  "ntfs-facial-steamer",
-  "electric-nail-drill-kit",
-  "extra-virgin-argan-oil",
-  "professional-wax-warmer",
-]
-  .map((slug) => getProduct(slug))
-  .filter((p): p is Product => Boolean(p));
 
 const ease = [0.22, 1, 0.36, 1] as const;
 const words = "Everything your salon & spa needs, at".split(" ");
@@ -98,15 +90,16 @@ function SpinningBadge() {
   );
 }
 
-export function Hero() {
+export function Hero({ slides }: { slides: Product[] }) {
   const [index, setIndex] = useState(0);
   const { add } = useCart();
-  const product = slides[index];
+  const product = slides[index % Math.max(slides.length, 1)];
 
   useEffect(() => {
+    if (slides.length < 2) return;
     const t = setTimeout(() => setIndex((i) => (i + 1) % slides.length), SLIDE_MS);
     return () => clearTimeout(t);
-  }, [index]);
+  }, [index, slides.length]);
 
   return (
     <section className="mx-auto max-w-7xl px-3 pt-3 sm:px-6 lg:px-8">
@@ -196,6 +189,7 @@ export function Hero() {
         </div>
 
         {/* Product stage */}
+        {product && (
         <div className="relative flex items-end justify-center px-6 pt-4 sm:px-10 lg:pt-16">
           <motion.div
             initial={{ opacity: 0, y: 60 }}
@@ -240,7 +234,7 @@ export function Hero() {
                   exit={{ opacity: 0, y: -8 }}
                   transition={{ duration: 0.3 }}
                 >
-                  <p className="truncate text-xs text-muted">{getCategory(product.category)?.name}</p>
+                  <p className="truncate text-xs text-muted">{product.categoryName}</p>
                   <Link href={`/product/${product.slug}`} className="block truncate text-sm font-medium hover:underline">
                     {product.name}
                   </Link>
@@ -257,6 +251,7 @@ export function Hero() {
             </div>
           </motion.div>
         </div>
+        )}
       </div>
     </section>
   );
