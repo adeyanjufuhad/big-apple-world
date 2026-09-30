@@ -3,6 +3,7 @@
 import { useCart } from "@/components/cart/cart-provider";
 import { WhatsAppIcon } from "@/components/icons";
 import { buttonClass } from "@/components/ui/button";
+import { useIsClient } from "@/lib/use-is-client";
 import { site } from "@/lib/site";
 import { cn } from "@/lib/utils";
 import { whatsappLink } from "@/lib/whatsapp";
@@ -75,6 +76,9 @@ export function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const pathname = usePathname();
   const scrolled = useScrolled();
+  // The pre-built page shell doesn't know the current path, so mark the active link
+  // only after hydration — otherwise server and client HTML differ.
+  const isClient = useIsClient();
 
   return (
     <header
@@ -100,7 +104,7 @@ export function Header() {
           aria-label="Main"
         >
           {nav.map((item) => {
-            const active = item.match?.(pathname) ?? false;
+            const active = isClient && (item.match?.(pathname) ?? false);
             return (
               <Link
                 key={item.href}
