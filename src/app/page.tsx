@@ -36,15 +36,7 @@ export default async function Home() {
           id="in-stock"
           align="center"
           className="pt-0 lg:pt-0"
-          eyebrow={
-            <span className="inline-flex items-center gap-2">
-              <span className="relative flex size-2">
-                <span className="absolute inline-flex size-full animate-ping rounded-full bg-emerald-500 opacity-60" />
-                <span className="relative inline-flex size-2 rounded-full bg-emerald-500" />
-              </span>
-              Available today
-            </span>
-          }
+          eyebrow="Available today"
           title="In stock now"
           link={{ href: "/shop?stock=1", label: "View all in stock" }}
         >

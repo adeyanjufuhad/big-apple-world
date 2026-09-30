@@ -141,15 +141,6 @@ export function Hero({ slides }: { slides: Product[] }) {
           </div>
 
           <div>
-            <motion.p
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, ease }}
-              className="mb-6 inline-flex items-center gap-2 rounded-full bg-white/10 px-3.5 py-1.5 text-xs font-medium text-white/85 ring-1 ring-white/15 backdrop-blur"
-            >
-              <span className="size-1.5 rounded-full bg-apple shadow-[0_0_0_3px_rgb(232_49_54/0.3)]" />
-              Direct distributor · Balogun Market, Lagos
-            </motion.p>
 
             <Headline />
 

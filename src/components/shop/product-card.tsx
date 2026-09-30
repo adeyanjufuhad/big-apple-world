@@ -70,10 +70,7 @@ export function ProductCard({ product, className }: { product: Product; classNam
         <div className="flex items-center justify-between gap-2 text-xs text-muted">
           <span className="truncate">{product.categoryName}</span>
           {product.inStock && (
-            <span className="inline-flex shrink-0 items-center gap-1.5">
-              <span className="size-1.5 rounded-full bg-emerald-500" />
-              In stock
-            </span>
+            <span className="shrink-0">In stock</span>
           )}
         </div>
         <h3 className="mt-1.5 text-[15px] leading-snug font-medium">
