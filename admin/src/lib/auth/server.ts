@@ -1,9 +1,11 @@
+import "server-only";
 import { createNeonAuth } from "@neondatabase/auth/next/server";
 import { redirect } from "next/navigation";
 
 export const auth = createNeonAuth({
   baseUrl: process.env.NEON_AUTH_BASE_URL!,
-  cookies: { secret: process.env.NEON_AUTH_COOKIE_SECRET! },
+  // Session cookies are httpOnly + secure by default; strict keeps them off cross-site requests.
+  cookies: { secret: process.env.NEON_AUTH_COOKIE_SECRET!, sameSite: "strict" },
 });
 
 /** Emails allowed into the admin, from ADMIN_EMAILS (comma-separated). */

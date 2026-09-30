@@ -1,3 +1,4 @@
+import "server-only";
 import { neon } from "@neondatabase/serverless";
 
 // Admin uses the database owner role. Never import this from client components.

@@ -1,3 +1,4 @@
+import "server-only";
 import { sql, type Order } from "./db";
 
 const TZ = "Africa/Lagos";
