@@ -9,13 +9,14 @@ export function whatsappLink(text?: string) {
 
 export type OrderLine = { product: Product; qty: number };
 
-export function orderMessage(lines: OrderLine[]) {
+export function orderMessage(lines: OrderLine[], ref?: string) {
   const items = lines.map(
     ({ product, qty }, i) => `${i + 1}. ${product.name} × ${qty} — ${formatPrice(product.price * qty)}`,
   );
   const total = lines.reduce((sum, { product, qty }) => sum + product.price * qty, 0);
   return [
     `Hello ${site.name}, I'd like to place an order:`,
+    ...(ref ? [`Order ref: ${ref}`] : []),
     "",
     ...items,
     "",

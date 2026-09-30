@@ -2,21 +2,53 @@
 
 import { buttonClass } from "@/components/ui/button";
 import { WhatsAppIcon } from "@/components/icons";
+import { getVisitorId, newOrderRef } from "@/lib/analytics";
 import { formatPrice } from "@/lib/utils";
 import { orderMessage, whatsappLink } from "@/lib/whatsapp";
-import { Minus, Plus, ShoppingBag, X } from "lucide-react";
+import { CheckCircle2, Minus, Plus, ShoppingBag, X } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useCart } from "./cart-provider";
 
 export function CartDrawer() {
-  const { open, setOpen, lines, count, total, setQty, remove } = useCart();
+  const { open, setOpen, lines, count, total, setQty, remove, clear } = useCart();
+  const [sent, setSent] = useState<{ ref: string; url: string } | null>(null);
+
+  const close = () => {
+    setOpen(false);
+    setSent(null);
+  };
+
+  // Opens WhatsApp with the order, records it as a pending order for the owner, then empties the cart.
+  const checkout = (e: React.MouseEvent) => {
+    e.preventDefault();
+    const ref = newOrderRef();
+    const url = whatsappLink(orderMessage(lines, ref));
+    window.open(url, "_blank", "noopener,noreferrer");
+    fetch("/api/orders", {
+      method: "POST",
+      keepalive: true,
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({
+        ref,
+        visitorId: getVisitorId(),
+        items: lines.map(({ product, qty }) => ({ slug: product.slug, qty })),
+      }),
+    }).catch(() => {});
+    setSent({ ref, url });
+    clear();
+  };
 
   useEffect(() => {
     if (!open) return;
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setOpen(false);
+        setSent(null);
+      }
+    };
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     window.addEventListener("keydown", onKey);
@@ -35,7 +67,7 @@ export function CartDrawer() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            onClick={() => setOpen(false)}
+            onClick={close}
           />
           <motion.aside
             role="dialog"
@@ -52,7 +84,7 @@ export function CartDrawer() {
                 Your cart <span className="font-normal text-muted">({count})</span>
               </h2>
               <button
-                onClick={() => setOpen(false)}
+                onClick={close}
                 className={buttonClass("ghost", "icon")}
                 aria-label="Close cart"
               >
@@ -60,13 +92,37 @@ export function CartDrawer() {
               </button>
             </header>
 
-            {lines.length === 0 ? (
+            {sent ? (
+              <div className="flex flex-1 flex-col items-center justify-center gap-4 px-8 text-center">
+                <span className="grid size-16 place-items-center rounded-full bg-emerald-50">
+                  <CheckCircle2 className="size-8 text-emerald-600" />
+                </span>
+                <h3 className="text-xl font-semibold">Order sent to WhatsApp</h3>
+                <p className="text-muted">
+                  Your order reference is <strong className="font-semibold text-ink">{sent.ref}</strong>. Send the
+                  message in WhatsApp and we&apos;ll confirm availability, price and delivery.
+                </p>
+                <a
+                  href={sent.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  data-checkout
+                  className={buttonClass("outline", "md")}
+                >
+                  <WhatsAppIcon className="size-4.5 text-[#25D366]" />
+                  WhatsApp didn&apos;t open? Tap here
+                </a>
+                <button onClick={close} className="text-sm font-medium text-navy hover:underline">
+                  Continue shopping
+                </button>
+              </div>
+            ) : lines.length === 0 ? (
               <div className="flex flex-1 flex-col items-center justify-center gap-4 px-6 text-center">
                 <span className="grid size-16 place-items-center rounded-full bg-sand">
                   <ShoppingBag className="size-7 text-muted" />
                 </span>
                 <p className="text-muted">Your cart is empty.</p>
-                <Link href="/shop" onClick={() => setOpen(false)} className={buttonClass("primary")}>
+                <Link href="/shop" onClick={close} className={buttonClass("primary")}>
                   Start shopping
                 </Link>
               </div>
@@ -136,8 +192,10 @@ export function CartDrawer() {
                   </div>
                   <a
                     href={whatsappLink(orderMessage(lines))}
+                    onClick={checkout}
                     target="_blank"
                     rel="noopener noreferrer"
+                    data-checkout
                     className={buttonClass("whatsapp", "lg", "w-full")}
                   >
                     <WhatsAppIcon className="size-5" />
