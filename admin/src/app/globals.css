@@ -1,0 +1,55 @@
+@import "tailwindcss";
+
+/* Big Apple brand: apple red #E83136, navy #3D3E91. */
+@theme {
+  --color-apple: #e83136;
+  --color-apple-soft: #fdecec;
+  --color-navy: #3d3e91;
+  --color-navy-deep: #2d2e73;
+  --color-navy-soft: #ececf6;
+  --color-night: #0e0e26;
+  --color-ink: #16163a;
+  --color-muted: #6c6c82;
+  --color-line: #e7e6ee;
+  --color-sand: #f4f2ef;
+  --color-canvas: #f7f6f3;
+
+  /* Chart series (validated: lightness band, CVD separation, contrast on white). */
+  --color-series-1: #4a4bab;
+  --color-series-2: #e83136;
+
+  --font-sans: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
+}
+
+@layer base {
+  html {
+    color-scheme: light;
+    -webkit-tap-highlight-color: transparent;
+  }
+  body {
+    background: var(--color-canvas);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+}
+
+@utility card {
+  border-radius: 1.25rem;
+  background: white;
+  box-shadow: 0 0 0 1px var(--color-line);
+}
+
+@utility field {
+  height: 2.75rem;
+  width: 100%;
+  border-radius: 0.75rem;
+  background: white;
+  padding-inline: 0.875rem;
+  font-size: 0.875rem;
+  box-shadow: 0 0 0 1px var(--color-line);
+  outline: none;
+  &:focus {
+    box-shadow: 0 0 0 2px var(--color-navy);
+  }
+}
