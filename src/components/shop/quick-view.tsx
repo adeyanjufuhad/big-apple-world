@@ -1,6 +1,6 @@
 "use client";
 
-import { getCategory, type Product } from "@/lib/products";
+import type { Product } from "@/lib/products";
 import { useIsClient } from "@/lib/use-is-client";
 import { formatPrice } from "@/lib/utils";
 import { ArrowRight, Check, Eye, X } from "lucide-react";
@@ -79,7 +79,7 @@ export function QuickViewButton({ product, className }: { product: Product; clas
                   </div>
                   <div className="flex flex-col p-7 md:p-9">
                     <span className="w-fit rounded-full px-3 py-1 text-xs ring-1 ring-line">
-                      {getCategory(product.category)?.name}
+                      {product.categoryName}
                     </span>
                     <h2 className="mt-4 text-3xl leading-tight font-medium tracking-tight">{product.name}</h2>
                     <p className="mt-3 text-2xl font-semibold tabular-nums">{formatPrice(product.price)}</p>

@@ -1,7 +1,7 @@
 import { headingClass } from "@/components/home/section";
 import { ProductCard } from "@/components/shop/product-card";
 import { ProductPurchase } from "@/components/shop/product-purchase";
-import { getCategory, getProduct, products } from "@/lib/products";
+import { getCatalog, getProduct } from "@/lib/catalog";
 import { site } from "@/lib/site";
 import { formatPrice } from "@/lib/utils";
 import { ArrowLeft, Check, ChevronDown, Clock, MapPin } from "lucide-react";
@@ -12,12 +12,13 @@ import { notFound } from "next/navigation";
 
 type Props = { params: Promise<{ slug: string }> };
 
-export function generateStaticParams() {
+export async function generateStaticParams() {
+  const { products } = await getCatalog();
   return products.map((p) => ({ slug: p.slug }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const product = getProduct((await params).slug);
+  const product = await getProduct((await params).slug);
   return product ? { title: product.name, description: product.description } : {};
 }
 
@@ -34,10 +35,11 @@ function Accordion({ title, open, children }: { title: string; open?: boolean; c
 }
 
 export default async function ProductPage({ params }: Props) {
-  const product = getProduct((await params).slug);
+  const product = await getProduct((await params).slug);
   if (!product) notFound();
 
-  const category = getCategory(product.category);
+  const { products } = await getCatalog();
+  const category = { name: product.categoryName };
   const related = products.filter((p) => p.category === product.category && p.slug !== product.slug);
   const more = [...related, ...products.filter((p) => p.category !== product.category)].slice(0, 4);
 

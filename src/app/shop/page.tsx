@@ -1,5 +1,6 @@
 import { ProductCard } from "@/components/shop/product-card";
-import { categories, getCategory, products, type Product } from "@/lib/products";
+import { getCatalog } from "@/lib/catalog";
+import type { Product } from "@/lib/products";
 import { cn } from "@/lib/utils";
 import { X } from "lucide-react";
 import type { Metadata } from "next";
@@ -30,8 +31,9 @@ const chip = "inline-flex h-10 items-center rounded-full border px-5 text-sm whi
 
 export default async function ShopPage({ searchParams }: { searchParams: Promise<Params> }) {
   const params = await searchParams;
+  const { categories, products } = await getCatalog();
   const { category, q = "", stock, sort = "featured" } = params;
-  const activeCategory = category ? getCategory(category) : undefined;
+  const activeCategory = category ? categories.find((c) => c.slug === category) : undefined;
   const query = q.trim().toLowerCase();
 
   const results = products
@@ -42,7 +44,7 @@ export default async function ShopPage({ searchParams }: { searchParams: Promise
         !query ||
         p.name.toLowerCase().includes(query) ||
         p.description.toLowerCase().includes(query) ||
-        getCategory(p.category)?.name.toLowerCase().includes(query),
+        p.categoryName.toLowerCase().includes(query),
     )
     .sort((sorts[sort] ?? sorts.featured).fn);
 

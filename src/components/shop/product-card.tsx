@@ -1,6 +1,6 @@
 import { AddToCartButton, QuickAdd } from "@/components/cart/add-to-cart";
 import { WhatsAppIcon } from "@/components/icons";
-import { getCategory, type Product } from "@/lib/products";
+import type { Product } from "@/lib/products";
 import { cn, formatPrice } from "@/lib/utils";
 import { productEnquiry, whatsappLink } from "@/lib/whatsapp";
 import Image from "next/image";
@@ -68,7 +68,7 @@ export function ProductCard({ product, className }: { product: Product; classNam
 
       <div className="mt-3.5 px-1">
         <div className="flex items-center justify-between gap-2 text-xs text-muted">
-          <span className="truncate">{getCategory(product.category)?.name}</span>
+          <span className="truncate">{product.categoryName}</span>
           {product.inStock && (
             <span className="inline-flex shrink-0 items-center gap-1.5">
               <span className="size-1.5 rounded-full bg-emerald-500" />
