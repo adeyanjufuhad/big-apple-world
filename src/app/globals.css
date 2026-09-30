@@ -1,0 +1,49 @@
+@import "tailwindcss";
+
+/* Brand palette sampled from the logo: apple red #E83136, navy #3D3E91. */
+@theme {
+  --color-apple: #e83136;
+  --color-apple-deep: #c8242a;
+  --color-apple-soft: #fdecec;
+  --color-navy: #3d3e91;
+  --color-navy-deep: #2d2e73;
+  --color-navy-soft: #ececf6;
+  --color-ink: #16163a;
+  --color-muted: #6c6c82;
+  --color-line: #e7e6ee;
+  --color-sand: #f4f2ef;
+  --color-canvas: #fbfaf8;
+
+  --font-sans: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-instrument), ui-serif, Georgia, serif;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-tap-highlight-color: transparent;
+  }
+  body {
+    background: var(--color-canvas);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+  ::selection {
+    background: var(--color-navy);
+    color: white;
+  }
+}
+
+@utility no-scrollbar {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
