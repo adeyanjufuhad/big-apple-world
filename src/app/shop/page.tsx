@@ -26,7 +26,7 @@ function href(current: Params, patch: Partial<Params>) {
   return s ? `/shop?${s}` : "/shop";
 }
 
-const chip = "inline-flex h-9 items-center rounded-full border px-4 text-sm whitespace-nowrap transition-colors";
+const chip = "inline-flex h-10 items-center rounded-full border px-5 text-sm whitespace-nowrap transition-colors";
 
 export default async function ShopPage({ searchParams }: { searchParams: Promise<Params> }) {
   const params = await searchParams;
@@ -48,19 +48,24 @@ export default async function ShopPage({ searchParams }: { searchParams: Promise
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8 lg:py-14">
-      <div className="flex flex-col gap-2">
-        <p className="text-sm text-muted">
-          <Link href="/" className="hover:text-ink">
+      <div className="relative isolate overflow-hidden rounded-[2rem] bg-navy px-6 py-10 text-white sm:px-10 lg:py-14">
+        <div className="grain pointer-events-none absolute inset-0 -z-10 opacity-[0.12] mix-blend-soft-light" />
+        <div className="pointer-events-none absolute -top-32 -right-16 -z-10 size-96 rounded-full bg-apple/35 blur-[110px]" />
+        <p className="text-sm text-white/60">
+          <Link href="/" className="hover:text-white">
             Home
           </Link>{" "}
           / Shop
         </p>
-        <h1 className="font-display text-5xl leading-none tracking-tight sm:text-6xl">
+        <h1 className="mt-3 text-5xl leading-[1] font-medium tracking-[-0.04em] sm:text-6xl lg:text-7xl">
           {activeCategory?.name ?? (query ? `“${q}”` : "All products")}
         </h1>
+        <p className="mt-3 text-white/70">
+          {results.length} {results.length === 1 ? "product" : "products"} · wholesale prices, ordered on WhatsApp
+        </p>
       </div>
 
-      <div className="sticky top-[8rem] z-20 md:top-[4.5rem] -mx-4 mt-8 border-b border-line bg-canvas/90 px-4 py-3 backdrop-blur sm:-mx-6 sm:px-6 lg:mx-0 lg:px-0">
+      <div className="sticky top-[7.5rem] z-20 -mx-4 mt-6 md:top-[4.5rem] border-b border-line bg-canvas/90 px-4 py-3 backdrop-blur sm:-mx-6 sm:px-6 lg:mx-0 lg:px-0">
         <nav aria-label="Categories" className="no-scrollbar flex gap-2 overflow-x-auto">
           <Link
             href={href(params, { category: undefined })}

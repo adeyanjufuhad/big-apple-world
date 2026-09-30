@@ -19,12 +19,14 @@ Open http://localhost:3000.
 | --- | --- |
 | Products, prices, stock, best seller / new flags | `src/lib/products.ts` |
 | Brands in the scrolling brand strip | `src/lib/brands.ts` |
-| Phone / WhatsApp number, address, hours | `src/lib/site.ts` |
+| Phone / WhatsApp number, address, hours, TikTok link | `src/lib/site.ts` |
 | WhatsApp order message format | `src/lib/whatsapp.ts` |
 | Brand colours and fonts | `src/app/globals.css` |
 | Product photos | `public/products/` |
 
-> **Before launch:** prices in `products.ts` and names in `brands.ts` are placeholders — replace them with the real values.
+> **Before launch:** prices in `products.ts` and names in `brands.ts` are placeholders — replace them with the real values, and paste the TikTok URL into `site.tiktok` (the footer icon becomes a link once it's set).
+
+Page transitions live in `src/app/template.tsx`.
 
 ## Homepage sections
 

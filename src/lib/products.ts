@@ -20,11 +20,11 @@ export type Product = {
 };
 
 export const categories: Category[] = [
-  { slug: "nails", name: "Nails & Accessories", image: "/products/nail-lamp.jpg" },
-  { slug: "pedicure-manicure", name: "Pedicure & Manicure", image: "/products/pedicure-chair.jpg" },
+  { slug: "nails", name: "Nails & Accessories", image: "/products/nail-drill.jpg" },
+  { slug: "pedicure-manicure", name: "Pedicure & Manicure", image: "/products/wax-warmer.jpg" },
   { slug: "beauty-spa", name: "Beauty & Spa", image: "/products/facial-steamer.jpg" },
-  { slug: "salon-equipment", name: "Salon Equipment", image: "/products/skincare-machine.jpg" },
-  { slug: "hair-care", name: "Hair Care", image: "/products/olive-hair-set.jpg" },
+  { slug: "salon-equipment", name: "Salon Equipment", image: "/products/mannequin-head.jpg" },
+  { slug: "hair-care", name: "Hair Care", image: "/products/hair-styling-kit.jpg" },
   { slug: "wellness", name: "Wellness", image: "/products/neck-massager.jpg" },
 ];
 

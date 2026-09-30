@@ -4,6 +4,8 @@ import { cn } from "@/lib/utils";
 // without the Radix Slot dependency — apply to <a>/<Link> via buttonClass().
 const variants = {
   primary: "bg-navy text-white hover:bg-navy-deep",
+  ink: "bg-ink text-white hover:bg-navy",
+  light: "bg-white text-ink hover:bg-sand",
   accent: "bg-apple text-white hover:bg-apple-deep",
   outline: "border border-line bg-white text-ink hover:border-ink",
   ghost: "text-ink hover:bg-sand",

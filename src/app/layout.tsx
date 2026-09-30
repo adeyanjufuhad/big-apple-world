@@ -1,5 +1,5 @@
 import { CartDrawer } from "@/components/cart/cart-drawer";
-import { CartProvider } from "@/components/cart/cart-provider";
+import { Providers } from "@/components/providers";
 import { Announcement } from "@/components/site/announcement";
 import { Footer } from "@/components/site/footer";
 import { Header } from "@/components/site/header";
@@ -27,16 +27,16 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${geist.variable} ${instrument.variable}`}>
+    <html lang="en" data-scroll-behavior="smooth" className={`${geist.variable} ${instrument.variable}`}>
       <body>
-        <CartProvider>
+        <Providers>
           <Announcement />
           <Header />
-          <main>{children}</main>
+          <main className="overflow-x-clip">{children}</main>
           <Footer />
           <CartDrawer />
           <WhatsAppFloat />
-        </CartProvider>
+        </Providers>
       </body>
     </html>
   );
