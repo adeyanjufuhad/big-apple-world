@@ -1,4 +1,6 @@
 import { sql } from "@/lib/db";
+import { allowRequest, clientIp, readJson } from "@/lib/security";
+import { checkBotId } from "botid/server";
 
 const TYPES = new Set(["page_view", "product_view", "add_to_cart", "whatsapp_click"]);
 
@@ -12,24 +14,24 @@ function deviceFrom(ua: string) {
   return "desktop";
 }
 
-function isBot(ua: string) {
+function isBotAgent(ua: string) {
   return !ua || /bot|crawl|spider|slurp|preview|headless|lighthouse/i.test(ua);
 }
 
+const done = () => new Response(null, { status: 204 });
+
 export async function POST(req: Request) {
   const ua = req.headers.get("user-agent") ?? "";
-  if (isBot(ua)) return new Response(null, { status: 204 });
+  if (isBotAgent(ua)) return done();
+  if ((await checkBotId()).isBot) return done();
 
-  let body: Record<string, unknown>;
-  try {
-    body = await req.json();
-  } catch {
-    return new Response(null, { status: 400 });
-  }
+  const body = await readJson(req, 2048);
+  const type = str(body?.type, 32);
+  const visitorId = str(body?.visitorId, 64);
+  if (!body || !type || !TYPES.has(type) || !visitorId) return new Response(null, { status: 400 });
 
-  const type = str(body.type, 32);
-  const visitorId = str(body.visitorId, 64);
-  if (!type || !TYPES.has(type) || !visitorId) return new Response(null, { status: 400 });
+  // 120 events per minute per IP is plenty for a person browsing.
+  if (!(await allowRequest("track", clientIp(req), 60, 120))) return new Response(null, { status: 429 });
 
   // Keep only the referring site's host, and ignore internal navigation.
   let referrer: string | null = null;
@@ -37,13 +39,13 @@ export async function POST(req: Request) {
   if (ref) {
     try {
       const host = new URL(ref).host;
-      if (host !== new URL(req.url).host) referrer = host;
+      if (host !== new URL(req.url).host) referrer = host.slice(0, 120);
     } catch {}
   }
 
   await sql`insert into events (type, visitor_id, path, product_slug, referrer, device, country)
             values (${type}, ${visitorId}, ${str(body.path, 300)}, ${str(body.productSlug, 120)},
-                    ${referrer}, ${deviceFrom(ua)}, ${req.headers.get("x-vercel-ip-country")})`;
+                    ${referrer}, ${deviceFrom(ua)}, ${str(req.headers.get("x-vercel-ip-country"), 2)})`;
 
-  return new Response(null, { status: 204 });
+  return done();
 }
