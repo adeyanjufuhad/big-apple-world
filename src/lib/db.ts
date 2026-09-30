@@ -1,3 +1,4 @@
+import "server-only";
 import { neon } from "@neondatabase/serverless";
 
 // Storefront connects with a restricted role: SELECT on the catalog, INSERT on events/orders.
