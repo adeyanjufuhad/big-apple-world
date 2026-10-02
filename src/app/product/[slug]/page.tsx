@@ -13,8 +13,11 @@ import { notFound } from "next/navigation";
 type Props = { params: Promise<{ slug: string }> };
 
 export async function generateStaticParams() {
+  // Pre-build the featured products; the rest are rendered on first visit and cached,
+  // which keeps deploys fast with a large catalog.
   const { products } = await getCatalog();
-  return products.map((p) => ({ slug: p.slug }));
+  const featured = products.filter((p) => p.bestSeller || p.newArrival);
+  return [...featured, ...products].slice(0, 40).map((p) => ({ slug: p.slug }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
