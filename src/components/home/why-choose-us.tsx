@@ -1,6 +1,7 @@
 "use client";
 
 import { buttonClass } from "@/components/ui/button";
+import { ScrollTextReveal } from "@/components/ui/scroll-text-reveal";
 import type { Product } from "@/lib/products";
 import { formatPrice } from "@/lib/utils";
 import { ArrowRight, BadgePercent, Factory, MessageCircle } from "lucide-react";
@@ -37,11 +38,15 @@ export function WhyChooseUs({ floating }: { floating?: Product }) {
         transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
         className="grid gap-8 lg:grid-cols-[1.5fr_1fr] lg:items-end"
       >
-        <h2 className={headingClass}>
-          Genuine beauty &amp; spa equipment,{" "}
-          <em className="font-display font-normal tracking-normal text-navy">sourced direct</em> and priced for your
-          business.
-        </h2>
+        <ScrollTextReveal
+          as="h2"
+          className={headingClass}
+          parts={[
+            "Genuine beauty & spa equipment,",
+            { text: "sourced direct", className: "font-display font-normal tracking-normal text-navy italic" },
+            "and priced for your business.",
+          ]}
+        />
         <div className="max-w-sm lg:justify-self-end">
           <p className="text-muted">
             One store in Balogun Market for everything a salon or spa runs on — from nail lamps to pedicure chairs.
