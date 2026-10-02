@@ -1,11 +1,11 @@
 "use client";
 
 import { InfiniteSlider } from "@/components/ui/infinite-slider";
-import { ProgressiveBlur } from "@/components/ui/progressive-blur";
-import { brands } from "@/lib/brands";
+import { brands, type Brand } from "@/lib/brands";
 import type { Category } from "@/lib/products";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
+import Link from "next/link";
 
 function Separator() {
   return (
@@ -35,8 +35,24 @@ function WordRow({ categories, outline, reverse }: { categories: Category[]; out
   );
 }
 
-// Logo-cloud pattern from 21st.dev (InfiniteSlider + ProgressiveBlur) on a brand-navy band,
-// followed by two giant counter-scrolling category rows.
+function BrandRow({ items, reverse }: { items: Brand[]; reverse?: boolean }) {
+  return (
+    <InfiniteSlider gap={72} speed={36} speedOnHover={12} reverse={reverse}>
+      {items.map((b) => (
+        <Link
+          key={b.name}
+          href={`/shop?q=${encodeURIComponent(b.query)}`}
+          className="font-display text-3xl whitespace-nowrap text-white/70 italic transition-colors hover:text-white sm:text-4xl"
+        >
+          {b.logo ? <Image src={b.logo} alt={b.name} width={120} height={40} className="h-9 w-auto brightness-0 invert" /> : b.name}
+        </Link>
+      ))}
+    </InfiniteSlider>
+  );
+}
+
+// Logo-cloud pattern from 21st.dev (InfiniteSlider) on a brand-navy band: two rows of the
+// brands we stock (each links to its products), then two giant counter-scrolling category rows.
 export function BrandMarquee({ categories }: { categories: Category[] }) {
   return (
     <section aria-labelledby="brands-heading" className="relative isolate overflow-hidden bg-navy py-16 text-white lg:py-24">
@@ -48,25 +64,10 @@ export function BrandMarquee({ categories }: { categories: Category[] }) {
           Brands available in store
         </h2>
 
-        <div className="relative mt-8">
-          <InfiniteSlider gap={80} speed={40} speedOnHover={15}>
-            {brands.map((b) =>
-              b.logo ? (
-                <Image key={b.name} src={b.logo} alt={b.name} width={120} height={40} className="h-9 w-auto brightness-0 invert" />
-              ) : (
-                <span
-                  key={b.name}
-                  className="font-display text-3xl whitespace-nowrap text-white/75 italic transition-colors hover:text-white sm:text-4xl"
-                >
-                  {b.name}
-                </span>
-              ),
-            )}
-          </InfiniteSlider>
-          <div className="pointer-events-none absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-navy" />
-          <div className="pointer-events-none absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-navy" />
-          <ProgressiveBlur className="pointer-events-none absolute inset-y-0 left-0 w-24" direction="left" blurIntensity={1} />
-          <ProgressiveBlur className="pointer-events-none absolute inset-y-0 right-0 w-24" direction="right" blurIntensity={1} />
+        {/* A mask fades the edges into whatever is behind, so no visible boxes over the glow. */}
+        <div className="mt-8 space-y-5 [mask-image:linear-gradient(to_right,transparent,black_12%,black_88%,transparent)]">
+          <BrandRow items={brands.filter((_, i) => i % 2 === 0)} />
+          <BrandRow items={brands.filter((_, i) => i % 2 === 1)} reverse />
         </div>
       </div>
 
