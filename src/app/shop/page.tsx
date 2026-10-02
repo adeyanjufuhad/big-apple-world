@@ -37,17 +37,18 @@ export default async function ShopPage({ searchParams }: { searchParams: Promise
   const { categories, products } = await getCatalog();
   const { category, q = "", stock, sort = "featured" } = params;
   const activeCategory = category ? categories.find((c) => c.slug === category) : undefined;
-  const query = q.trim().toLowerCase();
+  // Search ignores dots and apostrophes ("palmers" finds "Palmer's", "la girl" finds "L.A. Girl")
+  // and matches from the start of words ("elf" finds e.l.f. but not "self").
+  const normalize = (text: string) => " " + text.toLowerCase().replace(/[.'’]/g, "").replace(/\s+/g, " ");
+  const query = normalize(q.trim()).trimEnd();
+  const matches = (text: string) => normalize(text).includes(query);
 
   const results = products
     .filter((p) => !activeCategory || p.category === activeCategory.slug)
     .filter((p) => !stock || p.inStock)
     .filter(
       (p) =>
-        !query ||
-        p.name.toLowerCase().includes(query) ||
-        p.description.toLowerCase().includes(query) ||
-        p.categoryName.toLowerCase().includes(query),
+        query === "" || matches(p.name) || matches(p.categoryName),
     )
     .sort((sorts[sort] ?? sorts.featured).fn);
 
