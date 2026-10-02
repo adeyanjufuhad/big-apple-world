@@ -7,7 +7,6 @@ import { Footer } from "@/components/site/footer";
 import { Header } from "@/components/site/header";
 import { ScrollProgress } from "@/components/site/scroll-progress";
 import { WhatsAppFloat } from "@/components/site/whatsapp-float";
-import { getCatalog } from "@/lib/catalog";
 import { site } from "@/lib/site";
 import type { Metadata } from "next";
 import { Geist, Instrument_Serif } from "next/font/google";
@@ -30,13 +29,12 @@ export const metadata: Metadata = {
   description: site.description,
 };
 
-export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  const catalog = await getCatalog();
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" data-scroll-behavior="smooth" className={`${geist.variable} ${instrument.variable}`}>
       <body>
         <SmoothScroll>
-        <Providers catalog={catalog}>
+        <Providers>
           <ScrollProgress />
           <Announcement />
           <Header />
