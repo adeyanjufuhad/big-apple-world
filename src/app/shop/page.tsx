@@ -2,13 +2,15 @@ import { ProductCard } from "@/components/shop/product-card";
 import { getCatalog } from "@/lib/catalog";
 import type { Product } from "@/lib/products";
 import { cn } from "@/lib/utils";
-import { X } from "lucide-react";
+import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = { title: "Shop" };
 
-type Params = { category?: string; q?: string; stock?: string; sort?: string };
+type Params = { category?: string; q?: string; stock?: string; sort?: string; page?: string };
+
+const PER_PAGE = 24;
 
 const sorts: Record<string, { label: string; fn: (a: Product, b: Product) => number }> = {
   featured: { label: "Featured", fn: () => 0 },
@@ -19,7 +21,8 @@ const sorts: Record<string, { label: string; fn: (a: Product, b: Product) => num
 };
 
 function href(current: Params, patch: Partial<Params>) {
-  const next = { ...current, ...patch };
+  // Any change of filter or sort starts again from page 1.
+  const next = { ...current, page: undefined, ...patch };
   const qs = new URLSearchParams(
     Object.entries(next).filter((e): e is [string, string] => typeof e[1] === "string" && e[1] !== ""),
   );
@@ -47,6 +50,14 @@ export default async function ShopPage({ searchParams }: { searchParams: Promise
         p.categoryName.toLowerCase().includes(query),
     )
     .sort((sorts[sort] ?? sorts.featured).fn);
+
+  const pageCount = Math.max(1, Math.ceil(results.length / PER_PAGE));
+  const page = Math.min(Math.max(Number.parseInt(params.page ?? "1", 10) || 1, 1), pageCount);
+  const pageItems = results.slice((page - 1) * PER_PAGE, page * PER_PAGE);
+  // Page numbers to show: first, last, and a window around the current page.
+  const pages = Array.from({ length: pageCount }, (_, i) => i + 1).filter(
+    (n) => n === 1 || n === pageCount || Math.abs(n - page) <= 1,
+  );
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8 lg:py-14">
@@ -126,7 +137,7 @@ export default async function ShopPage({ searchParams }: { searchParams: Promise
 
       {results.length > 0 ? (
         <div className="mt-8 grid grid-cols-2 gap-x-4 gap-y-10 sm:grid-cols-3 lg:grid-cols-4 lg:gap-x-6">
-          {results.map((p) => (
+          {pageItems.map((p) => (
             <ProductCard key={p.slug} product={p} />
           ))}
         </div>
@@ -138,6 +149,48 @@ export default async function ShopPage({ searchParams }: { searchParams: Promise
             Clear filters
           </Link>
         </div>
+      )}
+
+      {pageCount > 1 && (
+        <nav aria-label="Pages" className="mt-14 flex flex-wrap items-center justify-center gap-2">
+          <Link
+            href={href(params, { page: String(page - 1) })}
+            aria-label="Previous page"
+            aria-disabled={page === 1}
+            className={cn(
+              "grid size-11 place-items-center rounded-full ring-1 ring-line transition-colors hover:bg-ink hover:text-white",
+              page === 1 && "pointer-events-none opacity-30",
+            )}
+          >
+            <ChevronLeft className="size-4.5" />
+          </Link>
+          {pages.map((n, i) => (
+            <span key={n} className="flex items-center gap-2">
+              {i > 0 && n - pages[i - 1] > 1 && <span className="px-1 text-muted">…</span>}
+              <Link
+                href={href(params, { page: String(n) })}
+                aria-current={n === page ? "page" : undefined}
+                className={cn(
+                  "grid size-11 place-items-center rounded-full text-sm tabular-nums transition-colors",
+                  n === page ? "bg-ink text-white" : "ring-1 ring-line hover:bg-sand",
+                )}
+              >
+                {n}
+              </Link>
+            </span>
+          ))}
+          <Link
+            href={href(params, { page: String(page + 1) })}
+            aria-label="Next page"
+            aria-disabled={page === pageCount}
+            className={cn(
+              "grid size-11 place-items-center rounded-full ring-1 ring-line transition-colors hover:bg-ink hover:text-white",
+              page === pageCount && "pointer-events-none opacity-30",
+            )}
+          >
+            <ChevronRight className="size-4.5" />
+          </Link>
+        </nav>
       )}
     </div>
   );
