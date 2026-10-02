@@ -4,6 +4,7 @@ import { Providers } from "@/components/providers";
 import { Announcement } from "@/components/site/announcement";
 import { Footer } from "@/components/site/footer";
 import { Header } from "@/components/site/header";
+import { ScrollProgress } from "@/components/site/scroll-progress";
 import { WhatsAppFloat } from "@/components/site/whatsapp-float";
 import { getCatalog } from "@/lib/catalog";
 import { site } from "@/lib/site";
@@ -33,6 +34,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
     <html lang="en" data-scroll-behavior="smooth" className={`${geist.variable} ${instrument.variable}`}>
       <body>
         <Providers catalog={catalog}>
+          <ScrollProgress />
           <Announcement />
           <Header />
           <main className="overflow-x-clip">{children}</main>
