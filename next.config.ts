@@ -35,6 +35,9 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
   images: {
     // Product photos uploaded from the admin live in Neon Object Storage.
+    // Photos are resized to web size before upload, so serve them as-is rather than
+    // spending Vercel's monthly image-optimisation allowance on a large catalog.
+    unoptimized: true,
     remotePatterns: [{ protocol: "https", hostname: "**.aws.neon.tech", pathname: "/product-images/**" }],
   },
   async headers() {

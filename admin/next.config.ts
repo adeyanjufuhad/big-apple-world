@@ -38,6 +38,9 @@ const nextConfig: NextConfig = {
     serverActions: { bodySizeLimit: "6mb" },
   },
   images: {
+    // Photos are resized to web size before upload, so serve them as-is rather than
+    // spending Vercel's monthly image-optimisation allowance on a large catalog.
+    unoptimized: true,
     remotePatterns: [{ protocol: "https", hostname: "**.aws.neon.tech", pathname: "/product-images/**" }],
   },
   async headers() {
