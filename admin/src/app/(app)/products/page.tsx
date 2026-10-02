@@ -29,10 +29,10 @@ function Flag({ children, tone }: { children: React.ReactNode; tone: "red" | "na
 export default async function ProductsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ q?: string; category?: string; saved?: string; deleted?: string; filter?: string }>;
+  searchParams: Promise<{ q?: string; category?: string; saved?: string; deleted?: string; filter?: string; page?: string }>;
 }) {
   await requireAdmin();
-  const { q = "", category = "", saved, deleted, filter } = await searchParams;
+  const { q = "", category = "", saved, deleted, filter, page: pageParam } = await searchParams;
   const [products, categories] = await Promise.all([getProducts(), getCategories()]);
   const query = q.trim().toLowerCase();
   const shown = products.filter(
@@ -41,6 +41,17 @@ export default async function ProductsPage({
       (!query || p.name.toLowerCase().includes(query)) &&
       (filter !== "needs-photo" || !p.image_url),
   );
+
+  const PER_PAGE = 50;
+  const pageCount = Math.max(1, Math.ceil(shown.length / PER_PAGE));
+  const page = Math.min(Math.max(Number.parseInt(pageParam ?? "1", 10) || 1, 1), pageCount);
+  const pageItems = shown.slice((page - 1) * PER_PAGE, page * PER_PAGE);
+  const pageHref = (n: number) => {
+    const qs = new URLSearchParams(
+      Object.entries({ q, category, filter, page: String(n) }).filter((e): e is [string, string] => !!e[1]),
+    );
+    return `/products?${qs}`;
+  };
 
   return (
     <>
@@ -88,7 +99,7 @@ export default async function ProductsPage({
         <div className="card py-16 text-center text-sm text-muted">No products match.</div>
       ) : (
         <ul className="card divide-y divide-line">
-          {shown.map((p) => (
+          {pageItems.map((p) => (
             <li key={p.id} className="flex items-center gap-4 p-4">
               <div className="relative size-16 shrink-0 overflow-hidden rounded-xl bg-sand">
                 {p.image_url && (
@@ -141,6 +152,26 @@ export default async function ProductsPage({
             </li>
           ))}
         </ul>
+      )}
+
+      {pageCount > 1 && (
+        <nav aria-label="Pages" className="mt-6 flex items-center justify-between gap-3 text-sm">
+          <span className="text-muted">
+            Page {page} of {pageCount} · {shown.length} products
+          </span>
+          <div className="flex gap-2">
+            {page > 1 && (
+              <Link href={pageHref(page - 1)} className="rounded-full px-4 py-2 font-medium ring-1 ring-line hover:bg-white">
+                Previous
+              </Link>
+            )}
+            {page < pageCount && (
+              <Link href={pageHref(page + 1)} className="rounded-full bg-ink px-4 py-2 font-medium text-white hover:bg-navy">
+                Next
+              </Link>
+            )}
+          </div>
+        </nav>
       )}
     </>
   );
