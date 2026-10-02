@@ -4,7 +4,6 @@ import { CategoryBento } from "@/components/home/category-bento";
 import { Hero } from "@/components/home/hero";
 import { InStockShowcase } from "@/components/home/in-stock-showcase";
 import { Section } from "@/components/home/section";
-import { StoreShowcase } from "@/components/home/store-showcase";
 import { TrustStrip } from "@/components/home/trust-strip";
 import { Visit } from "@/components/home/visit";
 import { WhyChooseUs } from "@/components/home/why-choose-us";
@@ -56,8 +55,6 @@ export default async function Home() {
           <BestSellers products={bestSellers} />
         </Section>
       )}
-
-      <StoreShowcase products={[...inStock].sort((a, b) => Number(b.bestSeller) - Number(a.bestSeller))} />
 
       <BrandMarquee categories={categories} />
 
