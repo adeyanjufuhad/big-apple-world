@@ -20,7 +20,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
             <Image src="/logo.png" alt="" width={24} height={25} />
           </span>
           <span className="leading-tight">
-            <span className="block font-semibold">Big Apple</span>
+            <span className="block font-semibold">Big Apple Beauty</span>
             <span className="block text-xs text-white/50">Admin</span>
           </span>
         </div>
@@ -57,7 +57,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
             <span className="grid size-9 place-items-center rounded-full bg-white ring-1 ring-line">
               <Image src="/logo.png" alt="" width={22} height={23} />
             </span>
-            <span className="font-semibold">Big Apple Admin</span>
+            <span className="font-semibold">Big Apple Beauty</span>
           </div>
           <form action={signOut}>
             <button aria-label="Sign out" className="grid size-9 place-items-center rounded-full ring-1 ring-line">

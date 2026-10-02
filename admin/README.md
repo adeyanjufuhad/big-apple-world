@@ -1,6 +1,6 @@
-# Big Apple Admin
+# Big Apple Beauty Admin
 
-The owner's back office for Big Apple World: a separate Next.js app, on its own URL, that shares the Neon database with the storefront.
+The owner's back office for Big Apple Beauty: a separate Next.js app, on its own URL, that shares the Neon database with the storefront.
 
 - **Dashboard:** revenue from paid orders, visitors, "ready to buy" (pending) orders, a visit-to-sale funnel, most-wanted products, devices and referrers, for the last 7, 30 or 90 days.
 - **Orders:** every "Checkout on WhatsApp" in the shop is saved with a reference like `BA-7K2QXM`, which also appears in the customer's WhatsApp message. Mark each order **paid** or **cancelled**. Only paid orders count as revenue.
@@ -39,7 +39,7 @@ See `.env.example`.
 | `ADMIN_EMAILS` | Emails allowed into the admin |
 | `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` | Neon Object Storage credential (storage read and write) |
 | `AWS_ENDPOINT_URL_S3`, `AWS_REGION`, `S3_BUCKET` | Storage endpoint, region and bucket (`product-images`, public read) |
-| `STOREFRONT_URL` | The shop's URL, e.g. `https://bigappleworld.vercel.app` |
+| `STOREFRONT_URL` | The shop's URL, e.g. `https://big-apple-world.vercel.app` |
 | `REVALIDATE_SECRET` | Same value as the storefront's `REVALIDATE_SECRET` |
 
 ## Deploy on Vercel

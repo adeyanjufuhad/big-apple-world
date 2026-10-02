@@ -28,7 +28,7 @@ export async function Footer() {
                 href={site.tiktok}
                 target="_blank"
                 rel="noopener noreferrer"
-                aria-label="Big Apple World on TikTok"
+                aria-label={`${site.name} on TikTok`}
                 className="grid size-10 place-items-center rounded-full bg-white/10 transition-colors hover:bg-white hover:text-night"
               >
                 <TikTokIcon className="size-4.5" />

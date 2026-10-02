@@ -1,4 +1,4 @@
--- Big Apple World — database hardening. Run after schema.sql.
+-- Big Apple Beauty — database hardening. Run after schema.sql.
 -- The admin connects as the table owner (bypasses RLS). The storefront connects as
 -- shop_web, a login role that is NOT in neon_superuser and gets only what's below.
 

@@ -87,7 +87,7 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
     <>
       <PageHeader
         title={`${greeting()}${firstName ? `, ${firstName}` : ""}`}
-        description={`Here’s how Big Apple World did in the last ${days} days.`}
+        description={`Here’s how Big Apple Beauty did in the last ${days} days.`}
         action={
           <div className="flex rounded-full bg-white p-1 ring-1 ring-line" role="group" aria-label="Date range">
             {RANGES.map((r) => (

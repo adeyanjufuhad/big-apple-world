@@ -3,9 +3,9 @@ import type { MetadataRoute } from "next";
 // Lets the owner "Add to Home Screen" and open the admin like an app.
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "Big Apple Admin",
-    short_name: "BA Admin",
-    description: "Manage products, categories and orders for Big Apple World.",
+    name: "Big Apple Beauty Admin",
+    short_name: "BA Beauty",
+    description: "Manage products, categories and orders for Big Apple Beauty.",
     start_url: "/",
     display: "standalone",
     background_color: "#f7f6f3",

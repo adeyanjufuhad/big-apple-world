@@ -46,7 +46,7 @@ export function Logo({ className, light }: { className?: string; light?: boolean
           Big <span className={light ? "text-[#ff6b70]" : "text-apple"}>Apple</span>
         </span>
         <span className={cn("block text-[10px] font-medium tracking-[0.32em]", light ? "text-white/60" : "text-navy")}>
-          WORLD
+          BEAUTY
         </span>
       </span>
     </Link>

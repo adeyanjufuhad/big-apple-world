@@ -1,6 +1,6 @@
-# Big Apple World
+# Big Apple Beauty
 
-Minimalist storefront for **AC Big Apple / Big Apple World** — wholesale beauty & spa essentials, Balogun Market, Lagos.
+Minimalist storefront for **Big Apple Beauty** (AC Big Apple) — wholesale beauty & spa essentials, Balogun Market, Lagos.
 
 Built with Next.js (App Router), Tailwind CSS v4, Motion and a Neon Postgres database. The cart has no payment step: checkout sends the order to the store on WhatsApp and saves it as a pending order for the owner.
 

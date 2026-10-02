@@ -9,7 +9,7 @@ export function AuthShell({ title, subtitle, children }: { title: string; subtit
           <span className="grid size-12 place-items-center rounded-full bg-white">
             <Image src="/logo.png" alt="" width={30} height={31} />
           </span>
-          <span className="text-lg font-semibold">Big Apple Admin</span>
+          <span className="text-lg font-semibold">Big Apple Beauty Admin</span>
         </div>
         <div className="relative">
           <p className="max-w-md text-5xl leading-[1.02] font-medium tracking-[-0.04em]">
@@ -28,7 +28,7 @@ export function AuthShell({ title, subtitle, children }: { title: string; subtit
             <span className="grid size-11 place-items-center rounded-full bg-white ring-1 ring-line">
               <Image src="/logo.png" alt="" width={28} height={29} />
             </span>
-            <span className="font-semibold">Big Apple Admin</span>
+            <span className="font-semibold">Big Apple Beauty Admin</span>
           </div>
           <h1 className="text-3xl font-semibold tracking-tight">{title}</h1>
           <p className="mt-2 text-sm text-muted">{subtitle}</p>

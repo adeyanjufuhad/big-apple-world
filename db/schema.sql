@@ -1,4 +1,4 @@
--- Big Apple World — Neon Postgres schema.
+-- Big Apple Beauty — Neon Postgres schema.
 -- Shared by the storefront (reads catalog, writes events/orders) and the admin app.
 
 create extension if not exists pgcrypto;

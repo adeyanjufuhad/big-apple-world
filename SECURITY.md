@@ -1,6 +1,6 @@
 # Security
 
-How Big Apple World (storefront + admin) handles each item on the security checklist.
+How Big Apple Beauty (storefront + admin) handles each item on the security checklist.
 
 | # | Item | How it's handled |
 | --- | --- | --- |

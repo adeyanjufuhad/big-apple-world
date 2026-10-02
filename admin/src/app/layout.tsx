@@ -5,10 +5,10 @@ import "./globals.css";
 const geist = Geist({ subsets: ["latin"], variable: "--font-geist" });
 
 export const metadata: Metadata = {
-  title: { default: "Big Apple Admin", template: "%s · Big Apple Admin" },
-  description: "Manage products, categories and orders for Big Apple World.",
+  title: { default: "Big Apple Beauty Admin", template: "%s · Big Apple Beauty Admin" },
+  description: "Manage products, categories and orders for Big Apple Beauty.",
   robots: { index: false, follow: false },
-  appleWebApp: { capable: true, title: "Big Apple Admin", statusBarStyle: "default" },
+  appleWebApp: { capable: true, title: "Big Apple Beauty Admin", statusBarStyle: "default" },
 };
 
 export const viewport: Viewport = { themeColor: "#3d3e91" };

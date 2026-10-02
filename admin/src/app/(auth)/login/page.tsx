@@ -7,7 +7,7 @@ export const metadata = { title: "Sign in" };
 export default async function LoginPage({ searchParams }: { searchParams: Promise<{ error?: string }> }) {
   const { error } = await searchParams;
   return (
-    <AuthShell title="Welcome back" subtitle="Sign in to manage Big Apple World.">
+    <AuthShell title="Welcome back" subtitle="Sign in to manage Big Apple Beauty.">
       {error === "not-allowed" && (
         <p className="mb-5 rounded-xl bg-apple-soft px-4 py-3 text-sm text-apple">
           That account doesn’t have admin access.
