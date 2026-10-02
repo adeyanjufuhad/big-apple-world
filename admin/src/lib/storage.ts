@@ -1,6 +1,7 @@
 import "server-only";
 import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { randomUUID } from "node:crypto";
+import sharp from "sharp";
 
 const s3 = new S3Client({
   region: process.env.AWS_REGION,
@@ -33,15 +34,23 @@ export async function uploadImage(file: File, folder: "products" | "categories")
   const kind = sniffImage(body);
   if (!kind) throw new Error("Please upload a JPG, PNG, WebP or AVIF image.");
 
+  // Re-encode to a web-sized WebP: phone photos shrink from megabytes to ~60 KB,
+  // and re-encoding strips any metadata (like GPS location) from the original.
+  const web = await sharp(body)
+    .rotate()
+    .resize({ width: 800, height: 800, fit: "inside", withoutEnlargement: true })
+    .webp({ quality: 82 })
+    .toBuffer();
+
   const bucket = process.env.S3_BUCKET!;
   // Random key: the uploader's filename never reaches storage.
-  const key = `${folder}/${randomUUID()}.${kind.ext}`;
+  const key = `${folder}/${randomUUID()}.webp`;
   await s3.send(
     new PutObjectCommand({
       Bucket: bucket,
       Key: key,
-      Body: body,
-      ContentType: kind.type,
+      Body: web,
+      ContentType: "image/webp",
       CacheControl: "public, max-age=31536000, immutable",
     }),
   );
