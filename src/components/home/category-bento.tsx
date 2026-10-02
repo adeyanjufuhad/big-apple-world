@@ -19,9 +19,16 @@ function tile(i: number, total: number) {
       imageClass: "right-2 bottom-0 h-full w-[48%]",
       feature: false,
     };
-  const lastOdd = i === total - 1 && (total - 3) % 2 === 1;
+  // Tiles after the first three sit in rows of 3 (desktop) / 2 (tablet). Stretch a
+  // short final row so the grid never ends with an empty gap.
+  const rest = total - 3;
+  const pos = i - 3;
+  const lgLeft = rest % 3;
+  const lgSpan =
+    lgLeft === 1 && pos === rest - 1 ? "lg:col-span-12" : lgLeft === 2 && pos >= rest - 2 ? "lg:col-span-6" : "lg:col-span-4";
+  const smFull = rest % 2 === 1 && pos === rest - 1;
   return {
-    className: cn("lg:col-span-4 min-h-[260px]", lastOdd && "sm:col-span-2"),
+    className: cn(lgSpan, "min-h-[260px]", smFull && "sm:col-span-2"),
     imageClass: "right-0 bottom-0 h-[80%] w-[55%]",
     feature: false,
   };
