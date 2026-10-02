@@ -25,13 +25,13 @@ Open http://localhost:3000. Copy `.env.example` to `.env.local` and fill in `DAT
 | What | File |
 | --- | --- |
 | Products, categories, prices, stock, photos | **Admin app** (stored in Neon) |
-| Brands in the scrolling brand strip | `src/lib/brands.ts` |
+| Brands in the scrolling brand strip (each links to a search) | `src/lib/brands.ts` |
 | Phone / WhatsApp number, address, hours, TikTok link | `src/lib/site.ts` |
 | WhatsApp order message format | `src/lib/whatsapp.ts` |
 | Brand colours and fonts | `src/app/globals.css` |
 | Database schema | `db/schema.sql` |
 
-> **Before launch:** the starting prices (seeded from `db/seed-data.ts`) and the names in `brands.ts` are placeholders. Update prices in the admin, replace the brand names, and paste the TikTok URL into `site.tiktok` (the footer icon becomes a link once it's set).
+> **Before launch:** check prices in the admin (the imported range uses Allure's retail prices), and paste the TikTok URL into `site.tiktok` (the footer icon becomes a link once it's set).
 
 Page transitions live in `src/app/template.tsx`.
 
@@ -56,9 +56,8 @@ Sampled from the logo:
 ## Components from 21st.dev
 
 - [Infinite Slider](https://21st.dev/@ibelick/components/infinite-slider) — `src/components/ui/infinite-slider.tsx`
-- [Progressive Blur](https://21st.dev/@ibelick/components/progressive-blur) — `src/components/ui/progressive-blur.tsx`
 
-Both are by ibelick (Motion Primitives). They power the brand marquee.
+Infinite Slider is by ibelick (Motion Primitives) and powers the brand marquee. The why-us statement uses an adaptation of [Reading Text Reveal](https://21st.dev/waleedkibhen/reading-text-reveal) — `src/components/ui/scroll-text-reveal.tsx`.
 
 ## Data & analytics
 
