@@ -4,7 +4,7 @@ import { requireAdmin } from "@/lib/auth/server";
 import { cn } from "@/lib/cn";
 import { getCategories, getProducts } from "@/lib/db";
 import { formatNaira } from "@/lib/format";
-import { EyeOff, Pencil, Plus, Search } from "lucide-react";
+import { EyeOff, FileSpreadsheet, ImageOff, Pencil, Plus, Search } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { toggleProductStock } from "../actions";
@@ -29,14 +29,17 @@ function Flag({ children, tone }: { children: React.ReactNode; tone: "red" | "na
 export default async function ProductsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ q?: string; category?: string; saved?: string; deleted?: string }>;
+  searchParams: Promise<{ q?: string; category?: string; saved?: string; deleted?: string; filter?: string }>;
 }) {
   await requireAdmin();
-  const { q = "", category = "", saved, deleted } = await searchParams;
+  const { q = "", category = "", saved, deleted, filter } = await searchParams;
   const [products, categories] = await Promise.all([getProducts(), getCategories()]);
   const query = q.trim().toLowerCase();
   const shown = products.filter(
-    (p) => (!category || p.category_id === category) && (!query || p.name.toLowerCase().includes(query)),
+    (p) =>
+      (!category || p.category_id === category) &&
+      (!query || p.name.toLowerCase().includes(query)) &&
+      (filter !== "needs-photo" || !p.image_url),
   );
 
   return (
@@ -45,12 +48,20 @@ export default async function ProductsPage({
         title="Products"
         description={`${products.length} products · ${products.filter((p) => p.in_stock).length} in stock`}
         action={
+          <div className="flex flex-wrap gap-2">
+          <Link
+            href="/products/import"
+            className="inline-flex h-11 items-center gap-2 rounded-full px-5 text-sm font-medium ring-1 ring-line hover:bg-white"
+          >
+            <FileSpreadsheet className="size-4" /> Import
+          </Link>
           <Link
             href="/products/new"
             className="inline-flex h-11 items-center gap-2 rounded-full bg-ink px-5 text-sm font-medium text-white hover:bg-navy"
           >
             <Plus className="size-4" /> Add product
           </Link>
+          </div>
         }
       />
 
@@ -92,6 +103,12 @@ export default async function ProductsPage({
                 <div className="mt-1.5 flex flex-wrap gap-1.5">
                   {p.best_seller && <Flag tone="red">Best seller</Flag>}
                   {p.new_arrival && <Flag tone="navy">New</Flag>}
+                  {!p.image_url && (
+                    <Flag tone="red">
+                      <ImageOff className="mr-1 inline size-3" />
+                      Needs photo
+                    </Flag>
+                  )}
                   {!p.published && (
                     <Flag tone="muted">
                       <EyeOff className="mr-1 inline size-3" />
