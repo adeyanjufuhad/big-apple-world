@@ -1,6 +1,7 @@
 import { AnalyticsTracker } from "@/components/analytics-tracker";
 import { CartDrawer } from "@/components/cart/cart-drawer";
 import { Providers } from "@/components/providers";
+import { SmoothScroll } from "@/components/smooth-scroll";
 import { Announcement } from "@/components/site/announcement";
 import { Footer } from "@/components/site/footer";
 import { Header } from "@/components/site/header";
@@ -10,6 +11,7 @@ import { getCatalog } from "@/lib/catalog";
 import { site } from "@/lib/site";
 import type { Metadata } from "next";
 import { Geist, Instrument_Serif } from "next/font/google";
+import "lenis/dist/lenis.css";
 import "./globals.css";
 
 const geist = Geist({ subsets: ["latin"], variable: "--font-geist" });
@@ -33,6 +35,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
   return (
     <html lang="en" data-scroll-behavior="smooth" className={`${geist.variable} ${instrument.variable}`}>
       <body>
+        <SmoothScroll>
         <Providers catalog={catalog}>
           <ScrollProgress />
           <Announcement />
@@ -43,6 +46,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
           <WhatsAppFloat />
           <AnalyticsTracker />
         </Providers>
+        </SmoothScroll>
       </body>
     </html>
   );

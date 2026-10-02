@@ -6,6 +6,7 @@ import { getVisitorId, newOrderRef } from "@/lib/analytics";
 import { formatPrice } from "@/lib/utils";
 import { orderMessage, whatsappLink } from "@/lib/whatsapp";
 import { CheckCircle2, Minus, Plus, ShoppingBag, X } from "lucide-react";
+import { useLenis } from "lenis/react";
 import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
@@ -41,8 +42,12 @@ export function CartDrawer() {
     clear();
   };
 
+  const lenis = useLenis();
+
   useEffect(() => {
     if (!open) return;
+    // Pause smooth page scrolling so the page behind the drawer stays put.
+    lenis?.stop();
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         setOpen(false);
@@ -55,8 +60,9 @@ export function CartDrawer() {
     return () => {
       document.body.style.overflow = prev;
       window.removeEventListener("keydown", onKey);
+      lenis?.start();
     };
-  }, [open, setOpen]);
+  }, [open, setOpen, lenis]);
 
   return (
     <AnimatePresence>
@@ -73,6 +79,7 @@ export function CartDrawer() {
             role="dialog"
             aria-modal="true"
             aria-label="Your cart"
+            data-lenis-prevent
             className="fixed inset-y-0 right-0 z-50 flex w-full max-w-md flex-col bg-white shadow-2xl"
             initial={{ x: "100%" }}
             animate={{ x: 0 }}

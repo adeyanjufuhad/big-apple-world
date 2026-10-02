@@ -4,6 +4,7 @@ import type { Product } from "@/lib/products";
 import { useIsClient } from "@/lib/use-is-client";
 import { formatPrice } from "@/lib/utils";
 import { ArrowRight, Check, Eye, X } from "lucide-react";
+import { useLenis } from "lenis/react";
 import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
@@ -15,8 +16,11 @@ export function QuickViewButton({ product, className }: { product: Product; clas
   const [open, setOpen] = useState(false);
   const isClient = useIsClient();
 
+  const lenis = useLenis();
+
   useEffect(() => {
     if (!open) return;
+    lenis?.stop();
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
@@ -24,8 +28,9 @@ export function QuickViewButton({ product, className }: { product: Product; clas
     return () => {
       document.body.style.overflow = prev;
       window.removeEventListener("keydown", onKey);
+      lenis?.start();
     };
-  }, [open]);
+  }, [open, lenis]);
 
   return (
     <>
@@ -55,6 +60,7 @@ export function QuickViewButton({ product, className }: { product: Product; clas
                   role="dialog"
                   aria-modal="true"
                   aria-label={product.name}
+                  data-lenis-prevent
                   className="relative grid max-h-[90vh] w-full max-w-4xl overflow-y-auto rounded-[1.75rem] bg-white shadow-2xl md:grid-cols-2"
                   initial={{ opacity: 0, y: 32, scale: 0.97 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}

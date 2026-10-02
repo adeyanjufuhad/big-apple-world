@@ -1,5 +1,6 @@
 "use client";
 
+import { useLenis } from "lenis/react";
 import { motion } from "motion/react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
@@ -13,14 +14,18 @@ const ease = [0.76, 0, 0.24, 1] as const;
 
 export default function Template({ children }: { children: React.ReactNode }) {
   const [animate] = useState(() => hasNavigated);
+  const lenis = useLenis();
 
   useEffect(() => {
     hasNavigated = true;
     // Next scrolls to the new segment, which leaves the announcement bar and page
     // top hidden under the sticky header. Start new pages at the very top instead,
     // unless the link targets an anchor (e.g. /#visit).
-    if (animate && !window.location.hash) window.scrollTo({ top: 0, behavior: "instant" });
-  }, [animate]);
+    if (animate && !window.location.hash) {
+      window.scrollTo({ top: 0, behavior: "instant" });
+      lenis?.scrollTo(0, { immediate: true, force: true });
+    }
+  }, [animate, lenis]);
 
   return (
     <>
