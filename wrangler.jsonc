@@ -5,6 +5,10 @@
   "main": ".open-next/worker.js",
   "compatibility_date": "2026-10-07",
   "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  "routes": [
+    { "pattern": "bigapplebeauty.store", "custom_domain": true },
+    { "pattern": "www.bigapplebeauty.store", "custom_domain": true }
+  ],
   "assets": {
     "directory": ".open-next/assets",
     "binding": "ASSETS"
