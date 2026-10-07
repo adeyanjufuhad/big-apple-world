@@ -1,6 +1,5 @@
 import { sql } from "@/lib/db";
 import { allowRequest, clientIp, readJson } from "@/lib/security";
-import { checkBotId } from "botid/server";
 
 type Row = { slug: string; name: string; price: number };
 
@@ -10,8 +9,6 @@ const fail = (status: number) => Response.json({ ok: false }, { status });
 // in the browser before this runs, so a rejected request never blocks a real sale.
 // Prices come from the database, never from the browser.
 export async function POST(req: Request) {
-  if ((await checkBotId()).isBot) return fail(403);
-
   const body = await readJson(req, 16_384);
   if (!body) return fail(400);
 

@@ -3,7 +3,7 @@ import { createHmac } from "node:crypto";
 import { sql } from "./db";
 
 export function clientIp(req: Request) {
-  return req.headers.get("x-real-ip") ?? req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
+  return req.headers.get("cf-connecting-ip") ?? req.headers.get("x-real-ip") ?? req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
 }
 
 /** Keyed hash so rate-limit rows never contain a raw IP address. */

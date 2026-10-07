@@ -66,6 +66,10 @@ Infinite Slider is by ibelick (Motion Primitives) and powers the brand marquee. 
 - **Analytics:** `POST /api/track` records page views, product views, add-to-carts and WhatsApp clicks against a random visitor ID. No names, emails or IP addresses are stored.
 - The storefront connects with a restricted database role that can read the catalog and insert events and orders only.
 
-## Deploy on Vercel
+## Deploy the storefront on Cloudflare Workers
 
-Import the repo with the default root directory and set `DATABASE_URL` and `REVALIDATE_SECRET`. Deploy the admin as a second Vercel project (see `admin/README.md`).
+The storefront is configured as the `big-apple-beauty` Worker in the client's Cloudflare account. The Worker uses the `big-apple-beauty-cache` KV namespace and SQLite-backed Durable Objects for Next.js cache revalidation. Run `npm run cf:build` and `npx opennextjs-cloudflare deploy` from this folder. Set the Worker secrets `DATABASE_URL`, `REVALIDATE_SECRET`, and `RATE_LIMIT_SECRET` before serving traffic. Do not commit their values. The storefront's database URL should use the restricted role described above.
+
+Cloudflare must have a `workers.dev` subdomain registered, or a purchased domain attached to this Worker, before the deployment has a public URL. Once the domain is connected, set `STOREFRONT_URL` in the admin and add the same `REVALIDATE_SECRET` on both apps. The admin app is deployed separately; see [its instructions](admin/README.md).
+
+KV is eventually consistent, so catalog edits may take up to about a minute to appear in every location even after the admin calls `/api/revalidate`. The five-minute time-based refresh remains a fallback. Monitor Workers and KV usage against Cloudflare's free-tier limits.

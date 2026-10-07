@@ -1,6 +1,5 @@
 import { sql } from "@/lib/db";
 import { allowRequest, clientIp, readJson } from "@/lib/security";
-import { checkBotId } from "botid/server";
 
 const TYPES = new Set(["page_view", "product_view", "add_to_cart", "whatsapp_click"]);
 
@@ -23,7 +22,6 @@ const done = () => new Response(null, { status: 204 });
 export async function POST(req: Request) {
   const ua = req.headers.get("user-agent") ?? "";
   if (isBotAgent(ua)) return done();
-  if ((await checkBotId()).isBot) return done();
 
   const body = await readJson(req, 2048);
   const type = str(body?.type, 32);
@@ -45,7 +43,7 @@ export async function POST(req: Request) {
 
   await sql`insert into events (type, visitor_id, path, product_slug, referrer, device, country)
             values (${type}, ${visitorId}, ${str(body.path, 300)}, ${str(body.productSlug, 120)},
-                    ${referrer}, ${deviceFrom(ua)}, ${str(req.headers.get("x-vercel-ip-country"), 2)})`;
+                    ${referrer}, ${deviceFrom(ua)}, ${str(req.headers.get("cf-ipcountry"), 2)})`;
 
   return done();
 }

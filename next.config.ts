@@ -1,4 +1,4 @@
-import { withBotId } from "botid/next/config";
+import { initOpenNextCloudflareForDev } from "@opennextjs/cloudflare";
 import type { NextConfig } from "next";
 
 const isProd = process.env.NODE_ENV === "production";
@@ -45,4 +45,6 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default withBotId(nextConfig);
+initOpenNextCloudflareForDev();
+
+export default nextConfig;
