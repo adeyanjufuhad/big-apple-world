@@ -2,6 +2,7 @@
   "$schema": "./node_modules/wrangler/config-schema.json",
   "name": "big-apple-beauty",
   "account_id": "54a7449949dda34ced250d78d5728860",
+  "workers_dev": true,
   "main": ".open-next/worker.js",
   "compatibility_date": "2026-10-07",
   "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
