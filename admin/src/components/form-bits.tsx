@@ -38,7 +38,27 @@ export function ConfirmButton({ message, children, className }: { message: strin
   );
 }
 
-/** Photo picker with a live preview. The file is sent with the form as "image". */
+/**
+ * Shrinks a photo to fit 800×800 and re-encodes it as WebP in the browser. Re-encoding
+ * also drops metadata such as GPS location. Falls back to the original if the browser can't.
+ */
+async function toWebImage(file: File): Promise<File> {
+  try {
+    const bitmap = await createImageBitmap(file);
+    const scale = Math.min(1, 800 / Math.max(bitmap.width, bitmap.height));
+    const canvas = document.createElement("canvas");
+    canvas.width = Math.round(bitmap.width * scale);
+    canvas.height = Math.round(bitmap.height * scale);
+    canvas.getContext("2d")!.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+    const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, "image/webp", 0.82));
+    if (!blob || blob.type !== "image/webp") return file;
+    return new File([blob], file.name.replace(/\.[^.]+$/, "") + ".webp", { type: "image/webp" });
+  } catch {
+    return file;
+  }
+}
+
+/** Photo picker with a live preview. The (resized) file is sent with the form as "image". */
 export function ImageField({ current, required, label = "Photo" }: { current?: string | null; required?: boolean; label?: string }) {
   const [preview, setPreview] = useState<string | null>(null);
   const shown = preview ?? current ?? null;
@@ -76,9 +96,15 @@ export function ImageField({ current, required, label = "Photo" }: { current?: s
           accept="image/jpeg,image/png,image/webp,image/avif"
           required={required && !current}
           className="sr-only"
-          onChange={(e) => {
-            const file = e.target.files?.[0];
-            setPreview(file ? URL.createObjectURL(file) : null);
+          onChange={async (e) => {
+            const input = e.currentTarget;
+            const original = input.files?.[0];
+            if (!original) return setPreview(null);
+            const resized = await toWebImage(original);
+            const files = new DataTransfer();
+            files.items.add(resized);
+            input.files = files.files;
+            setPreview(URL.createObjectURL(resized));
           }}
         />
       </label>
