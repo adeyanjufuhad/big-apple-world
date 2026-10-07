@@ -1,14 +1,17 @@
 import "server-only";
-import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
+import { AwsClient } from "aws4fetch";
 import { randomUUID } from "node:crypto";
-import sharp from "sharp";
 
-const s3 = new S3Client({
-  region: process.env.AWS_REGION,
-  endpoint: process.env.AWS_ENDPOINT_URL_S3,
-  forcePathStyle: true,
-  requestChecksumCalculation: "WHEN_REQUIRED",
-});
+// aws4fetch signs plain fetch() requests for Neon's S3-compatible storage. It's tiny and
+// runs natively on Cloudflare Workers, unlike the full AWS SDK.
+function storageClient() {
+  return new AwsClient({
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
+    region: process.env.AWS_REGION,
+    service: "s3",
+  });
+}
 
 export const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
 
@@ -34,25 +37,17 @@ export async function uploadImage(file: File, folder: "products" | "categories")
   const kind = sniffImage(body);
   if (!kind) throw new Error("Please upload a JPG, PNG, WebP or AVIF image.");
 
-  // Re-encode to a web-sized WebP: phone photos shrink from megabytes to ~60 KB,
-  // and re-encoding strips any metadata (like GPS location) from the original.
-  const web = await sharp(body)
-    .rotate()
-    .resize({ width: 800, height: 800, fit: "inside", withoutEnlargement: true })
-    .webp({ quality: 82 })
-    .toBuffer();
-
+  // The admin form already shrinks photos to an 800px WebP in the browser (which also
+  // strips metadata such as GPS location); the server only verifies and stores them.
   const bucket = process.env.S3_BUCKET!;
   // Random key: the uploader's filename never reaches storage.
-  const key = `${folder}/${randomUUID()}.webp`;
-  await s3.send(
-    new PutObjectCommand({
-      Bucket: bucket,
-      Key: key,
-      Body: web,
-      ContentType: "image/webp",
-      CacheControl: "public, max-age=31536000, immutable",
-    }),
-  );
-  return `${process.env.AWS_ENDPOINT_URL_S3}/${bucket}/${key}`;
+  const key = `${folder}/${randomUUID()}.${kind.ext}`;
+  const url = `${process.env.AWS_ENDPOINT_URL_S3}/${bucket}/${key}`;
+  const res = await storageClient().fetch(url, {
+    method: "PUT",
+    body,
+    headers: { "content-type": kind.type, "cache-control": "public, max-age=31536000, immutable" },
+  });
+  if (!res.ok) throw new Error("Couldn’t save the photo. Please try again.");
+  return url;
 }

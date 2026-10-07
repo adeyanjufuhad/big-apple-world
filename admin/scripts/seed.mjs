@@ -1,5 +1,6 @@
 // One-time seed: uploads the storefront's product photos to Neon Object Storage and
 // inserts the starting catalog. Safe to re-run (existing slugs are skipped).
+// Needs dev-only packages:  npm i --no-save @aws-sdk/client-s3 sharp
 // Run from admin/:  node --env-file=.env.local --experimental-strip-types scripts/seed.mjs
 import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { neon } from "@neondatabase/serverless";

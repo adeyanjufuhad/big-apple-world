@@ -1,5 +1,6 @@
 // One-off import of Allure's in-stock products, used with the site owner's permission
 // (images and prices). Descriptions are written fresh rather than copied.
+// Needs dev-only packages:  npm i --no-save @aws-sdk/client-s3 sharp
 // Run from admin/:  node --env-file=.env.local scripts/import-allure.mjs <dir-with-allure-json>
 // Safe to re-run: products whose slug already exists are skipped.
 import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
